@@ -6,6 +6,9 @@
  */
 
 module.exports = {
-	
-};
+	//POST action
+  create: function createFn (req, res) {
+		
+  }
 
+}
