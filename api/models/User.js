@@ -8,6 +8,11 @@
 module.exports = {
 
   attributes: {
+    email: {
+      required: 'true',
+      type: 'string',
+      unique: true
+    },
     toJSON: function () {
       // set obj variable to current object
       var obj = this.toObject()
