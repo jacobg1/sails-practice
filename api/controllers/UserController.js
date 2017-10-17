@@ -42,29 +42,24 @@ module.exports = {
 
           // if successful then next step
           success: function (result) {
-            // create user in database
+
+            //create user variable to save in DB
             var user = {
               email: email,
               encryptPassword: result
             }
+            // return res.ok(user)
 
-            // create user in db(with waterline) pass in local user var
+            //create user in db
             User.create(user, function (err, createdResult) {
-              // check for errors
-              if (err) {
-                if (err.invalidAttributes
-                  && err.invalidAttributes.email
-                  && err.invalidAttributes.email[0]
-                  && err.invalidAttributes.email[0].rule === 'unique') {
-                }
-                return res.alreadyInUse(err)
-              }
-              return res.serverError(err)
 
-              // add user id to session state(just id to prevent password from being stored in memory)
+              //error check
+              if (err) return res.serverError(err)
+
+              //add user id to session state
               req.session.user = createdResult.id
 
-              // return back user with response 200
+              //return back created user with status code of 200
               return res.ok(createdResult)
             })
           }
