@@ -8,7 +8,17 @@
 module.exports = {
 
   attributes: {
+    toJSON: function () {
+      // set obj variable to current object
+      var obj = this.toObject()
+
+      // delete password so that it doesn't get passed back in api call
+      delete obj.encryptPassword
+
+      // return obj
+      return obj
+    }
 
   }
-};
 
+}
