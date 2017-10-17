@@ -11,7 +11,6 @@ var Passwords = require('machinepack-passwords')
 module.exports = {
   // create login path
   login: function loginFn (req, res) {
-
     // query db for user
     User.findOne({
       email: req.param('email')
@@ -21,11 +20,29 @@ module.exports = {
 
       // if no result for email return not found
       if (!result) return res.notFound()
-
       // if email exists, check password
       Passwords.checkPassword({
         passwordAttempt: req.param('password'),
-        encryptPassword: result.encryptPassword
+        encryptedPassword: result.encryptedPassword
+
+      }).exec({
+
+        // handle errors
+        error: function (err) {
+          return result.id
+          // return res.serverError(err)
+        },
+
+        // handle incorrect submission
+        incorrect: function () {
+          return res.forbidden('invalid login, please try again!')
+        },
+
+        // if passwords match
+        success: function () {
+          req.session.user = result.id
+          return res.ok(result)
+        }
       })
     })
   },
@@ -65,7 +82,7 @@ module.exports = {
             // create user variable to save in DB
             var user = {
               email: email,
-              encryptPassword: result
+              encryptedPassword: result
             }
             // return res.ok(user)
 
