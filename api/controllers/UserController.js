@@ -42,24 +42,32 @@ module.exports = {
 
           // if successful then next step
           success: function (result) {
-
-            //create user variable to save in DB
+            // create user variable to save in DB
             var user = {
               email: email,
               encryptPassword: result
             }
             // return res.ok(user)
 
-            //create user in db
+            // create user in db
             User.create(user, function (err, createdResult) {
+              // error check
+              if (err) {
+                if (err.invalidAttributes
+                  && err.invalidAttributes.email
+                  && err.invalidAttributes.email[0]
+                  && err.invalidAttributes.email[0].rule === 'unique') {
+                    //send err to alreadyInUse.js
+                  return res.alreadyInUse(err)
+                }
+                //if not a dup email error, send normal error
+                return res.serverError(err)
+              }
 
-              //error check
-              if (err) return res.serverError(err)
-
-              //add user id to session state
+              // add user id to session state
               req.session.user = createdResult.id
 
-              //return back created user with status code of 200
+              // return back created user with status code of 200
               return res.ok(createdResult)
             })
           }
