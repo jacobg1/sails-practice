@@ -9,6 +9,26 @@ var EmailAddresses = require('machinepack-emailaddresses')
 var Passwords = require('machinepack-passwords')
 
 module.exports = {
+  // create login path
+  login: function loginFn (req, res) {
+
+    // query db for user
+    User.findOne({
+      email: req.param('email')
+    }, function (err, result) {
+      // send error if error
+      if (err) return res.serverError(err)
+
+      // if no result for email return not found
+      if (!result) return res.notFound()
+
+      // if email exists, check password
+      Passwords.checkPassword({
+        passwordAttempt: req.param('password'),
+        encryptPassword: result.encryptPassword
+      })
+    })
+  },
 
 	// POST action
   create: function createFn (req, res) {
@@ -57,10 +77,10 @@ module.exports = {
                   && err.invalidAttributes.email
                   && err.invalidAttributes.email[0]
                   && err.invalidAttributes.email[0].rule === 'unique') {
-                    //send err to alreadyInUse.js
+                    // send err to alreadyInUse.js
                   return res.alreadyInUse(err)
                 }
-                //if not a dup email error, send normal error
+                // if not a dup email error, send normal error
                 return res.serverError(err)
               }
 
