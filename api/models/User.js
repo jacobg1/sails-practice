@@ -15,7 +15,7 @@ module.exports = {
       unique: true
     },
     // define password attributes
-    encryptPassword: {
+    encryptedPassword: {
       type: 'string',
       required: true
     },
@@ -24,7 +24,7 @@ module.exports = {
       var obj = this.toObject()
 
       // delete password so that it doesn't get passed back in api call
-      delete obj.encryptPassword
+      delete obj.encryptedPassword
 
       // return obj
       return obj
