@@ -10,14 +10,14 @@ module.exports = {
   attributes: {
     // define email attributes
     email: {
-      required: 'true',
       type: 'string',
+      required: true,
       unique: true
     },
     // define password attributes
     encryptPassword: {
-      required: true,
-      type: 'string'
+      type: 'string',
+      required: true
     },
     toJSON: function () {
       // set obj variable to current object
