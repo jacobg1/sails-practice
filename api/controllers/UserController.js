@@ -51,7 +51,15 @@ module.exports = {
             // create user in db(with waterline) pass in local user var
             User.create(user, function (err, createdResult) {
               // check for errors
-              if (err) return res.serverError(err)
+              if (err) {
+                if (err.invalidAttributes
+                  && err.invalidAttributes.email
+                  && err.invalidAttributes.email[0]
+                  && err.invalidAttributes.email[0].rule === 'unique') {
+                }
+                return res.alreadyInUse(err)
+              }
+              return res.serverError(err)
 
               // add user id to session state(just id to prevent password from being stored in memory)
               req.session.user = createdResult.id
