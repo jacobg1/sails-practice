@@ -45,16 +45,19 @@ module.exports = {
             // create user in database
             var user = {
               email: email,
-              encryptPassword: password
+              encryptPassword: result
             }
 
-            //create user in db(with waterline) pass in local user var
-            User.create(user, function (err, createdResult){
-              //check for errors
+            // create user in db(with waterline) pass in local user var
+            User.create(user, function (err, createdResult) {
+              // check for errors
               if (err) return res.serverError(err)
 
-              //add user id to session state(just id to prevent password from being stored in memory)
+              // add user id to session state(just id to prevent password from being stored in memory)
               req.session.user = createdResult.id
+
+              // return back user with response 200
+              return res.ok(createdResult)
             })
           }
 
