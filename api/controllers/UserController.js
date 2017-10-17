@@ -47,6 +47,13 @@ module.exports = {
     })
   },
 
+  // logout function
+  logout: function logoutFn (req, res) {
+    // set session user to null
+    req.session.user = null
+    return res.ok()
+  },
+
 	// POST action
   create: function createFn (req, res) {
     var email = req.param('email')
