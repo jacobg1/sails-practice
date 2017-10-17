@@ -54,6 +54,20 @@ module.exports = {
     return res.ok()
   },
 
+  //get logged in user info
+  userIdentity: function (req, res) {
+    //query db with the id of user stored in session
+    User.findOne({
+      id: req.session.user
+    }, function (err, result) {
+      //handle errors
+      if (err) return res.serverError(err)
+      if (!result) return res.notFound()
+
+      //if no errors return result
+      return res.ok(result)
+    })
+  },
 	// POST action
   create: function createFn (req, res) {
     var email = req.param('email')
@@ -115,10 +129,11 @@ module.exports = {
               return res.ok(createdResult)
             })
           }
-
         })
       }
     })
-  }
-
+  },
+  // delete: function (err, res) {
+  //
+  // }
 }
