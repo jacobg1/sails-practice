@@ -20,6 +20,7 @@ module.exports = {
 
       // if no result for email return not found
       if (!result) return res.notFound()
+
       // if email exists, check password
       Passwords.checkPassword({
         passwordAttempt: req.param('password'),
@@ -54,18 +55,35 @@ module.exports = {
     return res.ok()
   },
 
-  //get logged in user info
+  // get logged in user info
   userIdentity: function (req, res) {
-    //query db with the id of user stored in session
+    // query db with the id of user stored in session
     User.findOne({
+
       id: req.session.user
     }, function (err, result) {
-      //handle errors
+      // handle errors
       if (err) return res.serverError(err)
       if (!result) return res.notFound()
 
-      //if no errors return result
+      // if no errors return result
       return res.ok(result)
+    })
+  },
+
+  // override find so that it only return the logged in user's info
+  find: function findFn (req, res) {
+    User.find({
+
+      id: req.session.user
+    }, function (err, results) {
+
+      //handle errors
+      if (err) return res.serverError(err)
+
+      if (results.length === 0) return res.notFound()
+
+      return res.ok(results)
     })
   },
 	// POST action
@@ -132,8 +150,5 @@ module.exports = {
         })
       }
     })
-  },
-  // delete: function (err, res) {
-  //
-  // }
+  }
 }
